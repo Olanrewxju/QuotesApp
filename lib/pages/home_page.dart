@@ -51,19 +51,29 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Spacer(),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.favorite),
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.favorite),
-                  color: Colors.white,
-                ),
-              ],
+            Container(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 1, color: Colors.white),
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.favorite),
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.share),
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
             Spacer(),
           ],
