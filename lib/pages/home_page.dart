@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:motivateme/model/quote_model.dart';
 import 'package:motivateme/widgets/quote_widget.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
-                return ErrorWidget(snapshot.error);
+                return ErrorWidget(snapshot);
               }
               return PageView.builder(
                 itemCount: snapshot.data?.length,
