@@ -1,7 +1,11 @@
-// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers
+// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, unused_local_variable, empty_statements, unnecessary_string_interpolations, curly_braces_in_flow_control_structures
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:motivateme/model/quote_model.dart';
+import 'package:motivateme/widgets/quote_widget.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,74 +15,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var apiURL = 'https://type.fit/api/quotes';
+
+  Future<List<dynamic>> getPost() async {
+    final response = await http.get(Uri.parse('$apiURL'));
+    return postfromJson(response.body);
+  }
+
+  List<dynamic> postfromJson(String str) {
+    final jsonData = json.decode(str);
+    return jsonData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
-      body: Container(
-        color: Colors.blue,
-        padding: EdgeInsets.only(left: 30, right: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Spacer(
-              flex: 2,
-            ),
-            Image.asset(
-              'assets/quotesymbol.png',
-              height: 30,
-              width: 30,
-              color: Colors.white,
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              "Our greatest glory is not in never falling, but in rising every time we fall",
-              style: GoogleFonts.lato(
-                textStyle: TextStyle(color: Colors.white, fontSize: 30),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              "Confucius",
-              style: GoogleFonts.lato(
-                textStyle:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Spacer(),
-            Container(
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 1, color: Colors.white),
-                    ),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.favorite),
-                      color: Colors.white,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.share),
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-            Spacer(),
-          ],
-        ),
-      ),
+      body: FutureBuilder<List<dynamic>>(
+          future: getPost(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return ErrorWidget(snapshot.error);
+              }
+              return PageView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index) {
+                  var model = snapshot.data![index];
+                  return QuoteWidget(
+                    quote: model['text'],
+                    author: model['author'],
+                    bgColor: Colors.blue,
+                  );
+                },
+              );
+            } else
+              return CircularProgressIndicator();
+          }),
     );
   }
 }
